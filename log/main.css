@@ -1,0 +1,55 @@
+/**
+ * SCCM Log Viewer
+ * @author Åsmund Stavdahl <asmund.stavdahl@itk.ntnu.no>
+ */
+
+* {
+	z-index: 10;
+}
+
+body > div.container {
+	width: 100%;
+	margin-bottom: 200px;
+}
+
+th {
+	position: relative;
+	z-index: 20;
+}
+
+table {
+	width: 100%;
+}
+.log-entry:not(.shown) {
+	display: none;
+}
+.log-entry {
+	font-size: 80%;
+}
+.log-entry code {
+	font-size: 100%;
+	word-wrap: break-word;
+}
+
+th .filter {
+	display: none;
+	display: block;
+}
+
+th:hover .filter {
+	display: block;
+	width: 100%;
+}
+
+#hud-wrap {
+	position: fixed;
+	bottom: 10px;
+	right: 10px;
+}
+
+#filter-tip, #no-match {
+	position: absolute;
+	top: 6.5em;
+	left: 10%;
+	width: 80%;
+}

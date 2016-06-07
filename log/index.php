@@ -18,7 +18,7 @@ SCCM Log Viewer
 <div class="container">
 	<form action="view/" method="POST" enctype="multipart/form-data">
 		<div class="form-group">
-			<label for="log_contents">Select image to upload</label>
+			<label for="log_contents">Select log to upload</label>
 			<input type="file" name="log_contents" id="log_contents">
 		</div>
 		<input type="submit" value="View" name="submit" class="btn btn-default">

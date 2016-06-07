@@ -5,10 +5,12 @@
 
 
 $(function(){
-	// Don't fort table when clicking in a filter input
-	$("input").on("click", e => false);
+	// Don't sort table when clicking in a filter input
+	$("input").on("click", function(e){
+		return false;
+	});
 	// Apply filter the enter key is pressed in a filter input
-	$("input").on("keypress", e => {
+	$("input").on("keypress", function(e){
 		(e.keyCode ? e.keyCode : e.which) == 13 && Filters.evaluate();
 	});
 });
@@ -23,7 +25,7 @@ var Filters = {
 	 * Check if any filters have changed since last time.
 	 * @return boolean true if filters have been changed since last call to this function
 	 */
-	hasChanged: () => {
+	hasChanged: function(){
 		var currentState = "";
 		$(".filter input").each(function(){
 			currentState += "~" + $(this).val();
@@ -33,8 +35,10 @@ var Filters = {
 		Filters.lastState = currentState;
 		return ret;
 	},
-	// Apply the filters to the log rows
-	evaluate: () => {
+	/**
+	 * Apply the filters to the log rows.
+	 */
+	evaluate: function(){
 		$(".filter input").attr("disabled", true);
 
 		var totalMatchingEntries = 0;
@@ -87,6 +91,9 @@ var Filters = {
 		$("#match-counter").html(totalMatchingEntries);
 		$(".filter input").attr("disabled", false);
 
+		/**
+		 * Show info boxes accoroding to the result of the filters.
+		 */
 		if(allFiltersAreEmpty){
 			$("#filter-tip").show();
 		} else {

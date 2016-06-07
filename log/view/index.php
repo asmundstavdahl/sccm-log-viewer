@@ -1,23 +1,22 @@
 <!--
-
-SCCM Log Viewer
-@author Åsmund Stavdahl <asmund.stavdahl@itk.ntnu.no>
-
+	SCCM Log Viewer
+	@author Åsmund Stavdahl <asmund.stavdahl@itk.ntnu.no>
 -->
 <!DOCTYPE html>
 <html>
 <head>
 	<title>SCCM Log Viewer</title>
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"></link>
 
 	<script type="text/javascript" src="https://code.jquery.com/jquery-2.2.3.min.js"></script>
 
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"></link>
 	<script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 
-	<script type="text/javascript" src="/sorttable.js"></script>
+	<script type="text/javascript" src="../sorttable.js"></script>
 
-	<link rel="stylesheet" type="text/css" href="/sccm/log/main.css"></link>
-	<script type="text/javascript" src="/sccm/log/main.js"></script>
+	<script type="text/javascript" src="../main.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="../main.css"></link>
 </head>
 <body>
 
@@ -25,14 +24,16 @@ SCCM Log Viewer
 
 require_once("../../sccm.php");
 
-# Hent innholder i loggfilen
+# Get log file contents
 $logContents = @file_get_contents($_FILES["log_contents"]["tmp_name"]);
 if(!$logContents){
 	exit("<h1>Empty or no file uploaded</h1><a href='../' class='btn btn-link'>Upload another file</a>");
 }
-# Windows liker å bruke \n\r istedet for \n
+
+# Convert to UNIX line endings
 $logContents = str_replace("\n\r", "\n", $logContents);
-# Del opp filen ved hvert linjeskift
+
+# Split file into lines
 $logLines = explode("\n", $logContents);
 
 ?>
@@ -49,57 +50,59 @@ $logLines = explode("\n", $logContents);
 	</div>
 
 	<table class="table table-striped sortable">
-		<tr>
-			<!-- Header-celler for hver av kolonnene, med tekstbokser for mulighet til å filtrere radene -->
-			<th>Time
-				<div class="filter">
-					<input type="text" class="form-control" data-prop="time" placeholder="regex" />
-				</div>
-			<th>Component
-				<div class="filter">
-					<input type="text" class="form-control" data-prop="component" placeholder="regex" />
-				</div>
-			<th>Context
-				<div class="filter">
-					<input type="text" class="form-control" data-prop="context" placeholder="regex" />
-				</div>
-			<th>Type
-				<div class="filter">
-					<input type="text" class="form-control" data-prop="type" placeholder="regex" />
-				</div>
-			<th>Title
-				<div class="filter">
-					<input type="text" class="form-control" data-prop="title" placeholder="regex" />
-				</div>
-			<th>Thread
-				<div class="filter">
-					<input type="text" class="form-control" data-prop="thread" placeholder="regex" />
-				</div>
-			<th>File
-				<div class="filter">
-					<input type="text" class="form-control" data-prop="file" placeholder="regex" />
-				</div>
-
-	<?php
-	# Lag en rad i tabellen for hver linje i loggfilen
-	foreach($logLines as $l){
-		# Lag et SCCM_Log_Entry-object for linja
-		$e = new SCCM_Log_Entry($l);
-		# Hvis logglinja mangler time eller title tar vi og går til neste
-		if(!@$e->time || !@$e->title) continue;
-	?>
-		<tr class="log-entry">
-			<td data-prop="time"><span><?php echo $e->time; ?></span>
-			<td data-prop="component"><span><?php echo $e->component; ?></span>
-			<td data-prop="context"><span><?php echo $e->context; ?></span>
-			<td data-prop="type"><span><?php echo $e->type; ?></span>
-			<td data-prop="title"><code><?php echo $e->title; ?></code>
-			<td data-prop="thread"><span><?php echo $e->thread; ?></span>
-			<td data-prop="file"><span><?php echo $e->file; ?></span>
-	<?php } ?>
+		<thead>
+			<tr>
+				<th>Time
+					<div class="filter">
+						<input type="text" class="form-control" data-prop="time" placeholder="regex" />
+					</div>
+				<th>Component
+					<div class="filter">
+						<input type="text" class="form-control" data-prop="component" placeholder="regex" />
+					</div>
+				<th>Context
+					<div class="filter">
+						<input type="text" class="form-control" data-prop="context" placeholder="regex" />
+					</div>
+				<th>Type
+					<div class="filter">
+						<input type="text" class="form-control" data-prop="type" placeholder="regex" />
+					</div>
+				<th>Title
+					<div class="filter">
+						<input type="text" class="form-control" data-prop="title" placeholder="regex" />
+					</div>
+				<th>Thread
+					<div class="filter">
+						<input type="text" class="form-control" data-prop="thread" placeholder="regex" />
+					</div>
+				<th>File
+					<div class="filter">
+						<input type="text" class="form-control" data-prop="file" placeholder="regex" />
+					</div>
+		</thead>
+		<tbody>
+		<?php
+		# Make a table row for each line in the log file
+		foreach($logLines as $logLine){
+			$e = new SCCM_Log_Entry($logLine);
+			# If there is no time or title we skip the line becuase
+			# it's not interresting
+			if(!@$e->time || !@$e->title) continue;
+		?>
+	<tr class="log-entry">
+				<td data-prop="time"><span><?php echo $e->time; ?></span>
+				<td data-prop="component"><span><?php echo $e->component; ?></span>
+				<td data-prop="context"><span><?php echo $e->context; ?></span>
+				<td data-prop="type"><span><?php echo $e->type; ?></span>
+				<td data-prop="title"><code><?php echo $e->title; ?></code>
+				<td data-prop="thread"><span><?php echo $e->thread; ?></span>
+				<td data-prop="file"><span><?php echo $e->file; ?></span>
+		<?php } ?>
+		</tbody>
 	</table>
 
-	<!-- noen knapper og sånnt nederst i hjørnet for å 1) gå tilbake til opplastningssiden, 2) på til toppen av loggen og 3) vise hvor mange rader som matcher filtrene -->
+	<!-- A utility box with match counter, link to top of page and a link to the upload page -->
 	<div id="hud-wrap" class="well">
 		<a href="../" class="col-sm-6 btn btn-default" role="button">
 			<div id="backlink">

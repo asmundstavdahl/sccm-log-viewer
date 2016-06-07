@@ -20,12 +20,15 @@ th {
 table {
 	width: 100%;
 }
+
 .log-entry:not(.shown) {
 	display: none;
 }
+
 .log-entry {
 	font-size: 80%;
 }
+
 .log-entry code {
 	font-size: 100%;
 	word-wrap: break-word;
@@ -52,4 +55,14 @@ th:hover .filter {
 	top: 6.5em;
 	left: 10%;
 	width: 80%;
+}
+
+
+/**
+ * Position table sorting indicators better.
+ */
+#sorttable_sortrevind, #sorttable_sortfwdind {
+	position: absolute;
+	top: 4px;
+	right: 50%;
 }

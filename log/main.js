@@ -5,21 +5,24 @@
 
 
 $(function(){
-	// Hindre sortering når man klikker inni filterboksen
+	// Don't fort table when clicking in a filter input
 	$("input").on("click", e => false);
-	//$("input").on("change", e => Filters.evaluate());
-	// Filtrer når man trykker enter i tekstboksen
+	// Apply filter the enter key is pressed in a filter input
 	$("input").on("keypress", e => {
 		(e.keyCode ? e.keyCode : e.which) == 13 && Filters.evaluate();
 	});
-	//setInterval(e => Filters.hasChanged() && Filters.evaluate(), 1000);
 });
 
-// Object med filterfunksjonalitet
 var Filters = {
-	// Siste filtersignatur
+	/**
+	 * The previous state (content) of the filters.
+	 * @type string
+	 */
 	lastState: null,
-	// Sjekk om noen av filterne har endred seg siden siste kall
+	/**
+	 * Check if any filters have changed since last time.
+	 * @return boolean true if filters have been changed since last call to this function
+	 */
 	hasChanged: () => {
 		var currentState = "";
 		$(".filter input").each(function(){
@@ -30,7 +33,7 @@ var Filters = {
 		Filters.lastState = currentState;
 		return ret;
 	},
-	// Kjør filtrene mit loggradene
+	// Apply the filters to the log rows
 	evaluate: () => {
 		$(".filter input").attr("disabled", true);
 
